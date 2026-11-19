@@ -1,0 +1,6 @@
+A Device,A Port,B Device,B Port,Media,Notes
+ib-leaf01,sw1p1,dgx-a01,mlx5_0/1,optical,compute rail 0
+ib-leaf01,sw1p2,dgx-a02,mlx5_0/1,optical,compute rail 0
+eth-leaf01,swp1,dgx-a01,ens1f0np0,copper,storage/in-band fabric
+eth-leaf01,swp2,dgx-a02,ens1f0np0,copper,storage/in-band fabric
+ib-leaf01,sw32p1,ib-spine01,sw1p1,optical,leaf-spine uplink

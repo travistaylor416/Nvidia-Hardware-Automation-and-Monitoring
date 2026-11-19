@@ -1,0 +1,2 @@
+# Only runtime dependency. Jira, Prometheus and Pushgateway use the Python standard library.
+paramiko>=3.4,<5

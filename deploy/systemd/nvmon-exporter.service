@@ -1,0 +1,28 @@
+[Unit]
+Description=nvmon NVIDIA fabric exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nvmon
+Group=nvmon
+WorkingDirectory=/opt/nvmon
+# Secrets live here (chmod 600, owned by nvmon) - see .env.example
+EnvironmentFile=/etc/nvmon/nvmon.env
+Environment=NVMON_CONFIG=/etc/nvmon/nvmon.toml
+ExecStart=/opt/nvmon/.venv/bin/python -m nvmon exporter
+Restart=on-failure
+RestartSec=30
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/nvmon/state /opt/nvmon/reports
+# Add the textfile collector dir if prometheus.outputs includes "textfile":
+# ReadWritePaths=/var/lib/node_exporter/textfile_collector
+
+[Install]
+WantedBy=multi-user.target

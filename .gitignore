@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+reports/
+state/
+*.prom
+# site-specific files: customer IPs/hostnames and settings stay out of git
+inventory.csv
+links.csv
+nvmon.toml
+.env

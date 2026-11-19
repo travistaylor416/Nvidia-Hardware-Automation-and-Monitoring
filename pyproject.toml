@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nvmon"
+version = "2.0.0"
+description = "Health checks, port telemetry and link fault isolation for NVIDIA servers (Ubuntu/DGX OS) and switches (NVOS, Cumulus Linux), with Prometheus/Grafana and Jira outputs."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["paramiko>=3.4,<5"]
+
+[project.scripts]
+nvmon = "nvmon.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["nvmon*"]

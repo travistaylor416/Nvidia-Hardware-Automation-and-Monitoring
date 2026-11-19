@@ -1,0 +1,15 @@
+# Add to prometheus.yml under scrape_configs.  Scrape interval should be >= prometheus.interval in nvmon.toml.
+scrape_configs:
+  - job_name: nvmon
+    scrape_interval: 60s
+    scrape_timeout: 30s
+    # Uncomment if NVMON_EXPORTER_TOKEN is set on the exporter:
+    # authorization:
+    #   type: Bearer
+    #   credentials_file: /etc/prometheus/secrets/nvmon_exporter_token
+    static_configs:
+      - targets: ["nvmon-host.example.com:9877"]
+        labels:
+          site: "dc1"
+
+# Alert rules: add deploy/prometheus/nvmon-alerts.yml under rule_files.

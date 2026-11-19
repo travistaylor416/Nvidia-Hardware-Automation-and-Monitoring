@@ -1,0 +1,91 @@
+# nvmon configuration template.
+# Copy to nvmon.toml (git-ignored) and edit.  Every key can also be set via environment variable
+# NVMON_<SECTION>_<KEY>, e.g. NVMON_JIRA_PROJECT_KEY=NET.  Env wins over this file.
+#
+# SECRETS DO NOT GO IN THIS FILE - the loader refuses keys that look like passwords/tokens.
+# Set them as environment variables (see .env.example):
+#   NVMON_SSH_PASSWORD[_NVOS|_CUMULUS|_UBUNTU]  NVMON_JIRA_USER  NVMON_JIRA_TOKEN
+#   NVMON_PUSHGATEWAY_USER  NVMON_PUSHGATEWAY_PASSWORD  NVMON_EXPORTER_TOKEN
+
+[general]
+inventory = "inventory.csv"
+links = "links.csv"
+report_dir = "reports"
+state_dir = "state"
+workers = 8
+
+[ssh]
+host_key_policy = "reject"     # reject = only hosts already in known_hosts (recommended); warn; auto
+known_hosts = ""               # optional extra known_hosts file
+key_file = ""                  # e.g. "/etc/nvmon/id_ed25519"; blank = ssh-agent / ~/.ssh defaults
+username_ubuntu = "ubuntu"
+username_nvos = "admin"
+username_cumulus = "cumulus"
+timeout = 10
+command_timeout = 60
+
+[checks]
+expected_dns_servers = ["10.10.10.10", "10.10.10.20"]
+dns_test_names = []            # e.g. ["ufm.cluster.example.com", "slurm-head.cluster.example.com"]
+bmc_lan_channel = 1
+bmc_tcp_ports = [443]
+fabric_expected_mtu = 0        # e.g. 9000; 0 = don't check
+max_diag_ports = 64
+
+[metrics]
+switch_ports = "monitored"     # monitored = ports in links.csv + inventory Ports column; all = every data port
+server_all_rdma_ports = true
+sample_interval = 0            # `metrics` command: >0 = two samples N seconds apart
+# Command alternatives per OS are listed in nvmon/settings.py - override here if your release differs:
+# nvos_counter_commands = ["nv show interface {port} counters -o json"]
+# nvos_module_commands  = ["nv show interface {port} transceiver -o json"]
+
+[thresholds]
+rx_power_low_dbm = -10.0       # used only when the module does not report its own thresholds
+tx_power_low_dbm = -8.0
+temperature_high_c = 70.0
+effective_ber_max = 1e-12
+raw_ber_max = 1e-5
+symbol_ber_max = 1e-13
+error_delta_warn = 1
+error_delta_fail = 100
+cumulative_error_warn = 1000
+link_flaps_warn = 1
+
+[prometheus]
+outputs = ["http"]             # any of "http", "textfile", "pushgateway"
+listen_address = "127.0.0.1"   # 0.0.0.0 only behind a firewall and with NVMON_EXPORTER_TOKEN set
+listen_port = 9877
+interval = 60
+metric_prefix = "nvmon"
+textfile_path = ""             # e.g. "/var/lib/node_exporter/textfile_collector/nvmon.prom"
+pushgateway_url = ""           # e.g. "https://pushgateway.example.com"
+pushgateway_job = "nvmon"
+include_health_checks = true
+health_check_every = 5
+verify_tls = true
+ca_bundle = ""                 # corporate CA bundle path, if needed
+
+[jira]
+enabled = false                # must be true AND dry_run false before anything is created
+dry_run = true
+url = ""                       # "https://yourcompany.atlassian.net" or "https://jira.corp.example.com"
+deployment = "cloud"           # cloud | server   (server = Server / Data Center with a PAT)
+api_version = "2"              # 2 = plain-text description (works on both); 3 = Cloud ADF
+project_key = ""               # e.g. "NET"
+issue_type = "Task"
+labels = ["nvmon"]
+components = []
+priority_map = { FAIL = "High", WARN = "Medium" }
+set_priority = true            # false if your project screen has no Priority field
+min_severity = "FAIL"          # FAIL | WARN
+group_by = "device"            # device | finding
+dedupe = true
+comment_on_change = true
+assignee = ""                  # Cloud accountId or Server username
+extra_fields = {}              # e.g. { customfield_10010 = "Network" }
+summary_prefix = "[nvmon]"
+max_issues_per_run = 20
+verify_tls = true
+ca_bundle = ""
+timeout = 15

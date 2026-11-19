@@ -1,0 +1,6 @@
+Name,Role,OS,Mgmt Address,Hostname,BMC Address,Fabric Addresses,Ports,Expected OS Version,Username,Location
+dgx-a01,server,ubuntu,10.20.0.11,dgx-a01.cluster.example.com,10.20.1.11,ens1f0np0=10.100.0.11/24;ens2f0np0=10.100.1.11/24,,22.04,nvadmin,Row A Rack 1
+dgx-a02,server,ubuntu,10.20.0.12,dgx-a02.cluster.example.com,10.20.1.12,10.100.0.12/24;10.100.1.12/24,,22.04,nvadmin,Row A Rack 1
+ib-leaf01,switch,nvos,10.20.2.21,ib-leaf01.cluster.example.com,,,sw1p*;sw2p*;sw3p*;sw4p*,,admin,Row A Rack 2
+ib-spine01,switch,nvos,10.20.2.31,ib-spine01.cluster.example.com,,,,,admin,Row B Rack 1
+eth-leaf01,switch,cumulus,10.20.2.41,eth-leaf01.cluster.example.com,,,swp1;swp2;swp49;swp50,5.9,cumulus,Row A Rack 2

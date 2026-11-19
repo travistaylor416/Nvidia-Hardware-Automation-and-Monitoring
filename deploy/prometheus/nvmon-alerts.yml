@@ -1,0 +1,52 @@
+groups:
+  - name: nvmon
+    rules:
+      - alert: NvmonCollectorDown
+        expr: nvmon_up == 0
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "nvmon cannot collect from {{ $labels.device }}"
+
+      - alert: NvmonLinkFault
+        expr: nvmon_link_fault_info == 2
+        for: 5m
+        labels: {severity: critical}
+        annotations:
+          summary: "Link fault {{ $labels.link }}"
+          description: "Suspected {{ $labels.component }} - {{ $labels.location }}. {{ $labels.summary }}"
+
+      - alert: NvmonLinkDegraded
+        expr: nvmon_link_fault_info == 1
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "Link degraded {{ $labels.link }}"
+          description: "Suspected {{ $labels.component }} - {{ $labels.location }}. {{ $labels.summary }}"
+
+      - alert: NvmonPortRxErrors
+        expr: rate(nvmon_port_crc_errors_total[10m]) + rate(nvmon_port_symbol_errors_total[10m]) > 0.1
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "Rx errors on {{ $labels.device }} {{ $labels.port }}"
+
+      - alert: NvmonPortFlapping
+        expr: increase(nvmon_port_link_downed_total[30m]) >= 3
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.device }} {{ $labels.port }} flapped {{ $value }} times in 30m"
+
+      - alert: NvmonTransceiverHot
+        expr: nvmon_port_module_temperature_celsius > 70
+        for: 10m
+        labels: {severity: warning}
+        annotations:
+          summary: "Transceiver {{ $labels.device }} {{ $labels.port }} at {{ $value }} C"
+
+      - alert: NvmonHealthCheckFailing
+        expr: nvmon_check_status == 2
+        for: 15m
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $labels.device }}: {{ $labels.check }} failing"
